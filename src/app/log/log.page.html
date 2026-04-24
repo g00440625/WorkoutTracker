@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Log Workout</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page-container">
+    <div class="section">
+  <h3 class="section-title">Search Exercise</h3>
+  <ion-searchbar class="custom-searchbar" [(ngModel)]="searchQuery" (ionInput)="searchExercises($event)" placeholder="Search exercise e.g. bench press" [debounce] = 300></ion-searchbar>
+
+    <ion-list *ngIf="exercises.length > 0" class="dropdown">
+      <ion-item *ngFor="let exercise of exercises" (click)="selectExercise(exercise)" button>
+        <img [src]="exercise.gifUrl" slot="start" class="thumbnail"/>
+        <ion-label>
+          <h3>{{ exercise.name | titlecase }}</h3>
+          <p>{{ exercise.bodyParts }} • {{ exercise.equipments }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="section selected-card" *ngIf="selectedExercise">
+      <h3 class="section-title">Selected Exercise</h3>
+      <div class="selected-content">
+          <img [src]="gifUrl" *ngIf="gifUrl" class="exercise-gif"/>
+
+          <div class="exercise-info">
+            <p class="exercise-name">{{ selectedExercise | titlecase }}</p>
+            <div class="tags">
+              <span class="tag">💪 {{ bodyPart | titlecase }}</span>
+              <span class="tag">🏋️ {{ equipment | titlecase }}</span>
+            </div>
+          </div>
+        </div>
+  </div>
+
+  <div class="section" *ngIf="selectedExercise">
+    <h3 class="section-title">Workout Details</h3>
+
+    <div class="input-row">
+      <div class="input-group">
+        <label>Sets</label>
+        <ion-input class="custom-input" type="number" [(ngModel)]="sets" placeholder="0" min="1">
+        </ion-input>
+      </div>
+
+      <div class="input-group">
+        <label>Reps</label>
+        <ion-input class="custom-input" type="number" [(ngModel)]="reps" placeholder="0" min="1"></ion-input>
+      </div>
+
+      <div class="input-group">
+        <label>Weight (kg)</label>
+        <ion-input class="custom-input" type="number" [(ngModel)]="weight" placeholder="0" min="0"></ion-input>
+      </div>
+    </div>
+
+    <div class="notes-group">
+      <label>Notes</label>
+      <ion-input class="notes-input" [(ngModel)]="notes" placeholder="e.g. easy mode today!">
+      </ion-input>
+    </div>
+  </div>
+
+  <div class="section buttons-section" *ngIf="selectedExercise">
+      <ion-button expand="block" (click)="saveWorkout()">
+        <ion-icon name="save-outline" slot="start"></ion-icon>
+        Save Workout
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" (click)="clearForm()">
+        <ion-icon name="trash-outline" slot="start"></ion-icon>
+        Clear
+      </ion-button>
+  </div>
+ </div>
+</ion-content>

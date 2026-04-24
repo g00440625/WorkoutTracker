@@ -1,0 +1,34 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <h2>{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h2>
+
+    <div class="form-group">
+      <ion-item>
+        <ion-input 
+          label="Email"
+          labelPlacement="floating"
+          type="email" 
+          [(ngModel)]="email">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input 
+          label="Password"
+          labelPlacement="floating"
+          type="password" 
+          [(ngModel)]="password">
+        </ion-input>
+      </ion-item>
+
+      <ion-button expand="block" (click)="submit()">
+        {{ isLogin ? 'Login' : 'Register' }}
+      </ion-button>
+
+      <ion-button expand="block" fill="clear" (click)="toggleMode()">
+        {{ isLogin ? 'No account? Register' : 'Already have account? Login' }}
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Workout History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="page-container">
+
+    @if (isLoading) {
+      <ion-card class="skeleton-card">
+        <ion-card-header>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 75%"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+        </ion-card-content>
+      </ion-card>
+    }
+
+    @if (!isLoading && groupedWorkouts.length === 0) {
+      <div class="empty-state">
+        <ion-icon name="barbell-outline"></ion-icon>
+        <h3>No workouts yet!</h3>
+        <p>Start logging your workouts to see your history here</p>
+      </div>
+    }
+
+    @if (!isLoading && totalWorkouts > 0) {
+      <div class="stats-banner">
+        <ion-icon name="trophy-outline"></ion-icon>
+        <p>Total Workouts Logged: <strong>{{ totalWorkouts }}</strong></p>
+      </div>
+
+      @for (day of groupedWorkouts; track day.date) {
+        <div class="day-group">
+          <div class="day-header">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ day.date }}</span>
+            <ion-badge class="workout-count">{{ day.exercises.length }}</ion-badge>
+          </div>
+
+          @for (exercise of day.exercises; track exercise.name) {
+            <ion-card class="workout-card">
+              <ion-card-header>
+                <ion-card-title>
+                  <ion-icon name="barbell-outline"></ion-icon>
+                  {{ exercise.name | titlecase }}
+                </ion-card-title>
+              </ion-card-header>
+
+              <ion-card-content>
+
+                @for (log of exercise.logs; track log.date) {
+                  <div class="workout-stats">
+                    <div class="stat">
+                      <span class="stat-label">Sets</span>
+                      <span class="stat-value">{{ log.sets }}</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-label">Reps</span>
+                      <span class="stat-value">{{ log.reps }}</span>
+                    </div>
+                    <div class="stat">
+                      <span class="stat-label">Weight</span>
+                      <span class="stat-value">{{ log.weight }}kg</span>
+                    </div>
+                  </div>
+
+                  @if (getProgress(exercise.logs); as progress) {
+                    <div class="progress-row">
+                      <span [class]="progress.reps > 0 ? 'improving' : progress.reps < 0 ? 'declining' : 'maintaining'">
+                        Reps: {{ progress.reps > 0 ? '▲ +' + progress.reps : progress.reps < 0 ? '▼ ' + progress.reps : '→ Same' }}
+                      </span>
+                      <span [class]="progress.weight > 0 ? 'improving' : progress.weight < 0 ? 'declining' : 'maintaining'">
+                        Weight: {{ progress.weight > 0 ? '▲ +' + progress.weight + 'kg' : progress.weight < 0 ? '▼ ' + progress.weight + 'kg' : '→ Same' }}
+                      </span>
+                    </div>
+                  }
+
+                  <div class="tags">
+                    <span class="tag">💪 {{ log.bodyPart | titlecase }}</span>
+                    <span class="tag">🏋️ {{ log.equipment | titlecase }}</span>
+                  </div>
+
+                  @if (log.notes) {
+                    <p class="notes">📝 {{ log.notes }}</p>
+                  }
+
+                  <p class="time">
+                    <ion-icon name="time-outline"></ion-icon>
+                    {{ log.date | date:'h:mm a' }}
+                  </p>
+                }
+
+              </ion-card-content>
+            </ion-card>
+          }
+
+        </div>
+      }
+    }
+
+  </div>
+</ion-content>
